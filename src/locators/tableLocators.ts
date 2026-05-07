@@ -1,22 +1,25 @@
-export const tableLocators = {
+import { Page } from '@playwright/test';
+
+
+export const tableLocators = (page: Page) => ({
   // Main table container
-  tableContainer: '.oxd-table',
+  tableContainer: page.locator('.oxd-table'),
   
   // Table row selectors
-  tableRow: '.oxd-table-row',
+  tableRow: page.locator('.oxd-table-row'),
   tableRowByText: (text: string) => 
-    `.oxd-table-row:has-text("${text}")`,
+    page.locator('.oxd-table-row').filter({ hasText: text }),
   
   // Button selectors within table
-  deleteButton: 'i.bi-trash',
-  deleteButtonParent: 'i.bi-trash + button',
+  deleteButton: page.locator('i.bi-trash'),
+  deleteButtonParent: page.locator('button').filter({ has: page.locator('i.bi-trash') }),
   
   // Confirmation dialog
-  confirmationDialog: '.orangehrm-dialog-popup',
-  confirmDeleteButton: 'button:has-text("Yes, Delete")',
-  cancelButton: 'button:has-text("Cancel")',
+  confirmationDialog: page.locator('.orangehrm-dialog-popup'),
+  confirmDeleteButton: page.getByRole('button', { name: 'Yes, Delete' }),
+  cancelButton: page.getByRole('button', { name: 'Cancel' }),
   
   // Success message
-  successMessage: '.oxd-toast--success',
-  successText: 'text="Successfully Deleted"',
-} as const;
+  successMessage: page.locator('.oxd-toast--success'),
+  successText: page.getByText('Successfully Deleted'),
+});

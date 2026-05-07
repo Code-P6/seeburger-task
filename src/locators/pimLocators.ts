@@ -1,27 +1,30 @@
-export const pimLocators = {
+import { Page } from '@playwright/test';
+
+
+export const pimLocators = (page: Page) => ({
   // Page headings
-  pimHeading: 'role=heading[name="PIM"]',
-  addEmployeeHeading: 'role=heading[name="Add Employee"]',
-  personalDetailsHeading: 'role=heading[name="Personal Details"]',
+  pimHeading: page.getByRole('heading', { name: 'PIM' }),
+  addEmployeeHeading: page.getByRole('heading', { name: 'Add Employee' }),
+  personalDetailsHeading: page.getByRole('heading', { name: 'Personal Details' }),
   
   // Buttons
-  addButton: 'role=button[name="Add"]',
-  searchButton: 'role=button[name=/Search|search/]',
+  addButton: page.getByRole('button', { name: 'Add' }),
+  searchButton: page.getByRole('button', { name: /Search|search/i }),
   
   // Navigation
-  employeeListLink: 'role=link[name="Employee List"]',
+  employeeListLink: page.getByRole('link', { name: 'Employee List' }),
   
-  // Search/Filter inputs
-  employeeNameSearchInput: 'input[placeholder*="Type for hints"]',
+  // Search/Filter inputs - target the first input in the employee search field
+  employeeNameSearchInput: page.locator('.oxd-input-group').first().locator('input'),
   
   // Autocomplete
-  autocompleteDropdown: '.oxd-autocomplete-dropdown',
-  autocompleteOption: '.oxd-autocomplete-dropdown .oxd-autocomplete-option',
+  autocompleteDropdown: page.locator('.oxd-autocomplete-dropdown'),
+  autocompleteOption: page.locator('.oxd-autocomplete-dropdown .oxd-autocomplete-option'),
   
   // Employee details
-  employeeNameHeader: '.orangehrm-edit-employee-name',
+  employeeNameHeader: page.locator('.orangehrm-edit-employee-name'),
   
   // Success messages
-  successSavedMessage: 'text="Successfully Saved"',
-  successDeletedMessage: 'text=/Successfully Deleted|Record Successfully Deleted/',
-} as const;
+  successSavedMessage: page.getByText('Successfully Saved'),
+  successDeletedMessage: page.getByText(/Successfully Deleted|Record Successfully Deleted/),
+});

@@ -1,11 +1,18 @@
-export const authLocators = {
+import { Page } from '@playwright/test';
+
+/**
+ * Centralized locators for Auth Setup
+ * Contains all selectors used in authentication
+ * Uses Playwright's concrete locator strategies for robustness
+ */
+export const authLocators = (page: Page) => ({
   // Login page inputs
-  usernameInput: 'input[placeholder="Username"]',
-  passwordInput: 'input[placeholder="Password"]',
+  usernameInput: page.getByPlaceholder('Username'),
+  passwordInput: page.getByPlaceholder('Password'),
   
   // Login button
-  loginButton: 'role=button[name="Login"]',
+  loginButton: page.getByRole('button', { name: 'Login' }),
   
   // Dashboard heading (verification)
-  dashboardHeading: 'h6:has-text("Dashboard")',
-} as const;
+  dashboardHeading: page.getByRole('heading', { name: 'Dashboard' }),
+});

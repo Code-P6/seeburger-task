@@ -9,12 +9,14 @@ export class PIMPage {
   readonly sidebar: SidebarComponent;
   readonly table: TableComponent;
   readonly form: FormComponent;
+  private locators: ReturnType<typeof pimLocators>;
 
   constructor(page: Page) {
     this.page = page;
     this.sidebar = new SidebarComponent(page);
     this.table = new TableComponent(page);
     this.form = new FormComponent(page);
+    this.locators = pimLocators(page);
   }
 
   async verifyPIMScreen() {
@@ -33,15 +35,17 @@ export class PIMPage {
 
   async saveEmployee() {
     await this.form.submit();
-    // Wait for navigation to personal details page to complete
-    await this.page.waitForURL('**/viewPersonalDetails/**', { timeout: 15000 });
+    // Wait for success confirmation
+    await expect(this.locators.successSavedMessage).toBeVisible({ timeout: 10000 });
+    // Wait for navigation by checking for the target page's heading
+    await expect(this.page.getByRole('heading', { name: 'Personal Details' })).toBeVisible({ timeout: 15000 });
     await this.page.waitForLoadState('networkidle');
   }
 
   async verifyEmployeePersonalDetails(firstName: string, lastName: string) {
     // Verifying that we landed on the Personal Details page for the user
     await expect(this.page.getByRole('heading', { name: 'Personal Details' })).toBeVisible({ timeout: 10000 });
-    const nameHeader = this.page.locator(pimLocators.employeeNameHeader);
+    const nameHeader = this.locators.employeeNameHeader;
     await expect(nameHeader).toHaveText(`${firstName} ${lastName}`);
   }
 
@@ -57,14 +61,14 @@ export class PIMPage {
    */
   async searchEmployee(employeeName: string) {
     // Find the employee name search input and fill it
-    const empNameInput = this.page.locator(pimLocators.employeeNameSearchInput).first();
+    const empNameInput = this.locators.employeeNameSearchInput;
     await empNameInput.fill(employeeName);
     
     // Wait for suggestions to appear and select the employee
     await this.page.waitForTimeout(500); // Small delay for suggestions
     
     // Try to select from dropdown if it appears
-    const suggestions = this.page.locator(pimLocators.autocompleteOption);
+    const suggestions = this.locators.autocompleteOption;
     if (await suggestions.count() > 0) {
       await suggestions.first().click();
     }
@@ -83,7 +87,7 @@ export class PIMPage {
   async deleteEmployee(employeeName: string) {
     await this.table.deleteRowContaining(employeeName);
     // Wait for the success toast
-    await expect(this.page.getByText(/Successfully Deleted|Record Successfully Deleted/)).toBeVisible({ timeout: 10000 });
+    await expect(this.locators.successDeletedMessage).toBeVisible({ timeout: 10000 });
   }
 
   /**

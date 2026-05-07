@@ -5,12 +5,13 @@ export class SidebarComponent {
   readonly page: Page;
   readonly root: Locator;
   readonly searchInput: Locator;
+  private locators: ReturnType<typeof sidebarLocators>;
 
   constructor(page: Page) {
     this.page = page;
-    // The sidebar container
-    this.root = page.locator(sidebarLocators.sidebarContainer);
-    this.searchInput = this.root.locator(sidebarLocators.searchInput);
+    this.locators = sidebarLocators(page);
+    this.root = this.locators.sidebarContainer;
+    this.searchInput = this.locators.searchInput;
   }
 
   async navigateTo(moduleName: string) {

@@ -5,10 +5,12 @@ import { dashboardLocators } from '../locators/dashboardLocators';
 export class DashboardPage {
   readonly page: Page;
   readonly sidebar: SidebarComponent;
+  private locators: ReturnType<typeof dashboardLocators>;
 
   constructor(page: Page) {
     this.page = page;
     this.sidebar = new SidebarComponent(page);
+    this.locators = dashboardLocators(page);
   }
 
   async goto() {
@@ -16,7 +18,7 @@ export class DashboardPage {
   }
 
   async verifyDashboard() {
-    await expect(this.page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    await expect(this.locators.dashboardHeading).toBeVisible();
   }
 
   async navigateToPIM() {

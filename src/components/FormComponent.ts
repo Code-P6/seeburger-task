@@ -5,19 +5,20 @@ export class FormComponent {
   readonly page: Page;
   readonly root: Locator;
   readonly saveButton: Locator;
+  private locators: ReturnType<typeof formLocators>;
 
-  constructor(page: Page, rootSelector: string = formLocators.formContainer) {
+  constructor(page: Page) {
     this.page = page;
-    this.root = page.locator(rootSelector).first();
-    this.saveButton = this.root.getByRole('button', { name: 'Save' });
+    this.locators = formLocators(page);
+    this.root = this.locators.formContainer;
+    this.saveButton = this.locators.saveButton;
   }
 
   /**
    * Fills an input field based on its placeholder
    */
   async fillTextInputByPlaceholder(placeholderText: string, value: string) {
-    const selector = formLocators.textInputByPlaceholder(placeholderText);
-    const input = this.root.locator(selector);
+    const input = this.locators.textInputByPlaceholder(placeholderText);
     await input.fill(value);
   }
 
@@ -25,7 +26,7 @@ export class FormComponent {
    * Fills an input field based on its label
    */
   async fillTextInputByLabel(labelText: string, value: string) {
-    const fieldContainer = this.root.locator(formLocators.inputGroup).filter({ hasText: labelText });
+    const fieldContainer = this.root.locator(this.locators.inputGroup).filter({ hasText: labelText });
     const input = fieldContainer.locator('input').first();
     await input.fill(value);
   }

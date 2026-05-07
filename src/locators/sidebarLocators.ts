@@ -1,15 +1,17 @@
-export const sidebarLocators = {
+import { Page } from '@playwright/test';
+
+export const sidebarLocators = (page: Page) => ({
   // Sidebar container
-  sidebarContainer: 'nav.oxd-navbar-nav',
+  sidebarContainer: page.locator('nav.oxd-navbar-nav'),
   
   // Menu items
-  menuItem: '.oxd-navbar-nav li',
+  menuItem: page.locator('.oxd-navbar-nav li'),
   menuItemByName: (name: string) => 
-    `.oxd-navbar-nav li:has-text("${name}")`,
+    page.locator('.oxd-navbar-nav li').filter({ hasText: name }),
   
   // Search field
-  searchInput: 'input[placeholder="Search"]',
+  searchInput: page.getByPlaceholder('Search'),
   
   // Menu list item
-  listItem: 'nav.oxd-navbar-nav li',
-} as const;
+  listItem: page.locator('nav.oxd-navbar-nav li'),
+});

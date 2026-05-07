@@ -1,17 +1,24 @@
-export const formLocators = {
+import { Page } from '@playwright/test';
+
+/**
+ * Centralized locators for Form Components
+ * Contains all selectors used in form interactions
+ * Uses Playwright's concrete locator strategies for robustness
+ */
+export const formLocators = (page: Page) => ({
   // Root selector for form container
-  formContainer: '.orangehrm-card-container form',
+  formContainer: page.locator('.orangehrm-card-container form'),
   
   // Button selectors
-  saveButton: 'button:has-text("Save")',
+  saveButton: page.getByRole('button', { name: 'Save' }),
   
   // Input selectors
   textInputByPlaceholder: (placeholder: string) => 
-    `input[placeholder="${placeholder}"]`,
+    page.getByPlaceholder(placeholder),
   
   textInputByLabel: (label: string) => 
-    `.oxd-input-group:has-text("${label}") input`,
+    page.locator('.oxd-input-group').filter({ has: page.getByText(label) }).locator('input'),
   
   // Form groups/containers
-  inputGroup: '.oxd-input-group',
-} as const;
+  inputGroup: page.locator('.oxd-input-group'),
+});
