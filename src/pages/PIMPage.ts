@@ -37,9 +37,8 @@ export class PIMPage {
     await this.form.submit();
     // Wait for success confirmation
     await expect(this.locators.successSavedMessage).toBeVisible({ timeout: 10000 });
-    // Wait for navigation by checking for the target page's heading
+    // Wait for the target page content instead of relying on networkidle
     await expect(this.page.getByRole('heading', { name: 'Personal Details' })).toBeVisible({ timeout: 15000 });
-    await this.page.waitForLoadState('networkidle');
   }
 
   async verifyEmployeePersonalDetails(firstName: string, lastName: string) {
